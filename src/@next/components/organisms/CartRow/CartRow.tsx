@@ -1,12 +1,12 @@
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import { Link } from "react-router-dom";
+import { generatePath } from "react-router";
 
 import { ErrorMessage, Icon, IconButton, Input } from "@components/atoms";
 import { CachedImage } from "@components/molecules";
+import { paths } from "@paths";
 import { commonMessages } from "@temp/intl";
-
-import { generateProductUrl } from "../../../../core/utils";
 
 import * as S from "./styles";
 import { IProps } from "./types";
@@ -42,6 +42,7 @@ export const CartRow: React.FC<IProps> = ({
   attributes = [],
   onRemove,
   id,
+  slug,
   type = "responsive",
 }: IProps) => {
   const [tempQuantity, setTempQuantity] = useState<string>(quantity.toString());
@@ -97,18 +98,22 @@ export const CartRow: React.FC<IProps> = ({
       ]
     : undefined;
 
-  const productUrl = generateProductUrl(id, name);
+  const productUrl = generatePath(paths.product, { slug });
 
   return (
     <S.Wrapper cartRowType={type} data-test="cartRow" data-test-id={sku}>
       <S.Photo cartRowType={type}>
-        <Link to={productUrl}>
-          <CachedImage data-test="itemImage" {...thumbnail} />
+        <Link href={productUrl}>
+          <a>
+            <CachedImage data-test="itemImage" {...thumbnail} />
+          </a>
         </Link>
       </S.Photo>
       <S.Description cartRowType={type}>
-        <Link to={productUrl}>
-          <S.Name data-test="itemName">{name}</S.Name>
+        <Link href={productUrl}>
+          <a>
+            <S.Name data-test="itemName">{name}</S.Name>
+          </a>
         </Link>
         <S.Sku>
           <S.LightFont>

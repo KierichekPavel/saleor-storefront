@@ -1,10 +1,13 @@
+import { ProductDetails } from "@saleor/sdk/lib/fragments/gqlTypes/ProductDetails";
 import classNames from "classnames";
 import React from "react";
 import Media from "react-media";
+import { generatePath } from "react-router";
+
 import { ProductDescription } from "@components/molecules";
 import { ProductGallery } from "@components/organisms";
 import AddToCartSection from "@components/organisms/AddToCartSection";
-import { smallScreen } from "../../globalStyles/scss/variables.scss";
+import { paths } from "@paths";
 
 import {
   Breadcrumbs,
@@ -12,20 +15,20 @@ import {
   OverlayTheme,
   OverlayType,
 } from "../../components";
-import { generateCategoryUrl, generateProductUrl } from "../../core/utils";
+import { structuredData } from "../../core/SEO/Product/structuredData";
 import GalleryCarousel from "./GalleryCarousel";
 import OtherProducts from "./Other";
-
-import { structuredData } from "../../core/SEO/Product/structuredData";
 import { IProps } from "./types";
 
-const populateBreadcrumbs = product => [
+import { smallScreen } from "../../globalStyles/scss/variables.scss";
+
+const populateBreadcrumbs = (product: ProductDetails) => [
   {
-    link: generateCategoryUrl(product.category.id, product.category.name),
+    link: generatePath(paths.category, { slug: product.category.slug }),
     value: product.category.name,
   },
   {
-    link: generateProductUrl(product.id, product.name),
+    link: generatePath(paths.product, { slug: product.slug }),
     value: product.name,
   },
 ];
@@ -48,7 +51,7 @@ const Page: React.FC<
         variant => variant.id === variantId
       );
 
-      if (variant.images.length > 0) {
+      if (variant?.images.length > 0) {
         return variant.images;
       }
     }
@@ -123,7 +126,7 @@ const Page: React.FC<
       <div className="container">
         <div className="product-page__product__description">
           <ProductDescription
-            descriptionJson={product.descriptionJson}
+            description={product.description}
             attributes={product.attributes}
           />
         </div>

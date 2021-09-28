@@ -1,22 +1,21 @@
-import * as React from "react";
-import { FormattedMessage, useIntl } from "react-intl";
-import { Link } from "react-router-dom";
-
-import { TaxedMoney } from "@components/containers";
-import {
-  checkoutMessages,
-  translatePaymentStatus,
-  translateOrderStatus,
-} from "@temp/intl";
 import { OrderDetail_lines } from "@saleor/sdk/lib/fragments/gqlTypes/OrderDetail";
-import { DropdownMenu, IconButton } from "@components/atoms";
 import { OrderByToken_orderByToken } from "@saleor/sdk/lib/queries/gqlTypes/OrderByToken";
 import { UserOrderByToken_orderByToken } from "@saleor/sdk/lib/queries/gqlTypes/UserOrderByToken";
+import Link from "next/link";
+import * as React from "react";
+import { FormattedMessage, useIntl } from "react-intl";
+
+import { DropdownMenu, IconButton } from "@components/atoms";
+import { TaxedMoney } from "@components/containers";
+import { paths } from "@paths";
+import {
+  checkoutMessages,
+  translateOrderStatus,
+  translatePaymentStatus,
+} from "@temp/intl";
 
 import { AddressSummary, CartTable, NotFound } from "../../../components";
 import { ILine } from "../../../components/CartTable/ProductRow";
-
-import { orderHistoryUrl } from "../../../app/routes";
 
 const extractOrderLines = (lines: OrderDetail_lines[]): ILine[] => {
   return lines
@@ -35,18 +34,21 @@ const Page: React.FC<{
   downloadInvoice: () => void;
 }> = ({ guest, order, downloadInvoice }) => {
   const intl = useIntl();
+
   return order ? (
     <>
       {!guest && (
-        <Link className="order-details__link" to={orderHistoryUrl}>
-          <FormattedMessage defaultMessage="Go back to Order History" />
+        <Link href={paths.accountOrderHistory}>
+          <a className="order-details__link">
+            <FormattedMessage defaultMessage="Go back to Order History" />
+          </a>
         </Link>
       )}
       <div className="order-details__header">
         <div>
           <h3>
             <FormattedMessage
-              defaultMessage="Your order no.: {orderNum}"
+              defaultMessage="Your order number: {orderNum}"
               values={{ orderNum: order.number }}
             />
           </h3>
@@ -97,7 +99,6 @@ const Page: React.FC<{
           <AddressSummary
             address={order.shippingAddress}
             email={order.userEmail}
-            paragraphRef={this.shippingAddressRef}
           />
         </div>
       </div>

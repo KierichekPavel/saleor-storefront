@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+// @generated
 // This file was automatically generated and should not be edited.
 
 //==============================================================
@@ -275,19 +276,25 @@ export enum ProductOrderField {
   PRICE = "PRICE",
   PUBLICATION_DATE = "PUBLICATION_DATE",
   PUBLISHED = "PUBLISHED",
+  RANK = "RANK",
   RATING = "RATING",
   TYPE = "TYPE",
 }
 
 export interface AttributeInput {
   slug: string;
-  value?: string | null;
   values?: (string | null)[] | null;
+  valuesRange?: IntRangeInput | null;
+  boolean?: boolean | null;
+}
+
+export interface IntRangeInput {
+  gte?: number | null;
+  lte?: number | null;
 }
 
 export interface ProductOrder {
   direction: OrderDirection;
-  channel?: string | null;
   attributeId?: string | null;
   field?: ProductOrderField | null;
 }

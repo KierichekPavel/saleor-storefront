@@ -1,20 +1,18 @@
 import { useAuth, useCart, useCheckout } from "@saleor/sdk";
-import { History } from "history";
+import { IItems } from "@saleor/sdk/lib/api/Cart/types";
+import { UserDetails_me } from "@saleor/sdk/lib/queries/gqlTypes/UserDetails";
+import { NextPage } from "next";
+import Link from "next/link";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { useHistory } from "react-router-dom";
 
-import { Button, CartFooter, CartHeader } from "@components/atoms";
+import { Button, CartFooter, CartHeader, Loader } from "@components/atoms";
 import { TaxedMoney } from "@components/containers";
 import { CartRow } from "@components/organisms";
 import { Cart, CartEmpty } from "@components/templates";
-import { IItems } from "@saleor/sdk/lib/api/Cart/types";
-import { UserDetails_me } from "@saleor/sdk/lib/queries/gqlTypes/UserDetails";
-import { BASE_URL } from "@temp/core/config";
+import { paths } from "@paths";
 import { checkoutMessages } from "@temp/intl";
 import { ITaxedMoney } from "@types";
-
-import { IProps } from "./types";
 
 const title = (
   <h1 data-test="cartPageTitle">
@@ -22,22 +20,20 @@ const title = (
   </h1>
 );
 
-const getShoppingButton = (history: History) => (
-  <Button
-    testingContext="cartPageContinueShoppingButton"
-    onClick={() => history.push(BASE_URL)}
-  >
-    <FormattedMessage {...checkoutMessages.continueShopping} />
-  </Button>
+const getShoppingButton = () => (
+  <Link href={paths.home}>
+    <Button testingContext="cartPageContinueShoppingButton">
+      <FormattedMessage {...checkoutMessages.continueShopping} />
+    </Button>
+  </Link>
 );
 
-const getCheckoutButton = (history: History, user?: UserDetails_me | null) => (
-  <Button
-    testingContext="proceedToCheckoutButton"
-    onClick={() => history.push(user ? `/checkout/` : `/login/`)}
-  >
-    <FormattedMessage defaultMessage="PROCEED TO CHECKOUT" />
-  </Button>
+const getCheckoutButton = (user?: UserDetails_me | null) => (
+  <Link href={user ? paths.checkout : paths.login}>
+    <Button testingContext="proceedToCheckoutButton">
+      <FormattedMessage defaultMessage="PROCEED TO CHECKOUT" />
+    </Button>
+  </Link>
 );
 
 const cartHeader = <CartHeader />;
@@ -66,6 +62,7 @@ const generateCart = (
       key={id ? `id-${id}` : `idx-${index}`}
       index={index}
       id={variant?.product?.id || ""}
+      slug={variant.product?.slug || ""}
       name={variant?.product?.name || ""}
       maxQuantity={variant.quantityAvailable || quantity}
       quantity={quantity}
@@ -97,8 +94,7 @@ const generateCart = (
   ));
 };
 
-export const CartPage: React.FC<IProps> = ({}: IProps) => {
-  const history = useHistory();
+export const CartPage: React.FC<NextPage> = () => {
   const { user } = useAuth();
   const { checkout } = useCheckout();
   const {
@@ -124,11 +120,11 @@ export const CartPage: React.FC<IProps> = ({}: IProps) => {
     net: discount,
   };
 
-  if (loaded && items?.length) {
-    return (
+  return loaded ? (
+    items?.length ? (
       <Cart
         title={title}
-        button={getCheckoutButton(history, user)}
+        button={getCheckoutButton(user)}
         cartHeader={cartHeader}
         cartFooter={prepareCartFooter(
           totalPrice,
@@ -138,7 +134,10 @@ export const CartPage: React.FC<IProps> = ({}: IProps) => {
         )}
         cart={items && generateCart(items, removeItem, updateItem)}
       />
-    );
-  }
-  return <CartEmpty button={getShoppingButton(history)} />;
+    ) : (
+      <CartEmpty button={getShoppingButton()} />
+    )
+  ) : (
+    <Loader />
+  );
 };

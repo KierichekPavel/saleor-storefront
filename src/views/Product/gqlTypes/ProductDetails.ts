@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+// @generated
 // This file was automatically generated and should not be edited.
 
 import { CountryCode } from "./../../../../gqlTypes/globalTypes";
@@ -422,6 +423,7 @@ export interface ProductDetails_product_category_products_edges_node {
    * The ID of the object.
    */
   id: string;
+  slug: string;
   name: string;
   /**
    * The main thumbnail for a product.
@@ -466,10 +468,13 @@ export interface ProductDetails_product_category {
 export interface ProductDetails_product_images {
   __typename: "ProductImage";
   /**
-   * The ID of the object.
+   * The ID of the image.
    */
   id: string;
-  alt: string;
+  /**
+   * The alt text of the image.
+   */
+  alt: string | null;
   /**
    * The URL of the image.
    */
@@ -515,14 +520,17 @@ export interface ProductDetails_product_attributes {
 export interface ProductDetails_product_variants_images {
   __typename: "ProductImage";
   /**
-   * The ID of the object.
+   * The ID of the image.
    */
   id: string;
   /**
    * The URL of the image.
    */
   url: string;
-  alt: string;
+  /**
+   * The alt text of the image.
+   */
+  alt: string | null;
 }
 
 export interface ProductDetails_product_variants_pricing_priceUndiscounted_gross {
@@ -689,6 +697,7 @@ export interface ProductDetails_product {
    * The ID of the object.
    */
   id: string;
+  slug: string;
   name: string;
   /**
    * The main thumbnail for a product.
@@ -702,7 +711,7 @@ export interface ProductDetails_product {
    * Lists the storefront product's pricing, the current price and discounts, only meant for displaying.
    */
   pricing: ProductDetails_product_pricing | null;
-  descriptionJson: any;
+  description: any | null;
   category: ProductDetails_product_category | null;
   /**
    * List of images for the product.

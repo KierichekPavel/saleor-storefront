@@ -1,27 +1,27 @@
 import gql from "graphql-tag";
 
-import { TypedQuery } from "../../core/queries";
-import { Article, ArticleVariables } from "./gqlTypes/Article";
+export const pagesQuery = gql`
+  query Pages {
+    pages(first: 50) {
+      edges {
+        node {
+          id
+          slug
+        }
+      }
+    }
+  }
+`;
 
-const articleQuery = gql`
-  query Article($slug: String!, $channel: String) {
+export const articleQuery = gql`
+  query Article($slug: String!) {
     page(slug: $slug) {
-      contentJson
+      content
       id
       seoDescription
       seoTitle
       slug
       title
     }
-    collection(slug: "featured-products", channel: $channel) {
-      id
-      backgroundImage {
-        url
-      }
-    }
   }
 `;
-
-export const TypedArticleQuery = TypedQuery<Article, ArticleVariables>(
-  articleQuery
-);
